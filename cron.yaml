@@ -1,0 +1,4 @@
+- description: "Data extractor job"
+  url: https://us-central1-scenic-setup-274303.cloudfunctions.net/extractDailyData
+  schedule: every weekday 09:00
+  timezone: Pacific Daylight Time 
