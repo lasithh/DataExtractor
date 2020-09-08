@@ -1,22 +1,22 @@
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
 import com.quant.extract.api.DataMover;
 import com.quant.extract.cloud.GoogleBucket;
 import com.quant.extract.cse.destination.TradeSummaryDestination;
 import com.quant.extract.cse.naming.FileNameProvider;
 import com.quant.extract.cse.reader.CSEHttpReader;
 import com.quant.extract.cse.source.TradeSummarySource;
-import lombok.extern.log4j.Log4j2;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@Log4j2
-public class Main {
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+public class ExtractFunction implements HttpFunction {
+    @Override
+    public void service(HttpRequest httpRequest, HttpResponse httpResponse) throws Exception {
         GoogleBucket googleBucket = GoogleBucket.builder()
                 .bucketName("cse_data")
                 .projectId("scenic-setup-274303")

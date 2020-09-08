@@ -8,5 +8,6 @@ steps:
       - deploy
       - extractDailyData
       - --source=.
+      - --entry-point=ExtractFunction
       - --trigger-http
       - --runtime=java11
