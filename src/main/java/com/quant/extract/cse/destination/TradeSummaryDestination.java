@@ -16,6 +16,6 @@ public class TradeSummaryDestination implements Destination {
     @Override
     public void put(@NonNull final DataFile dataFile) {
 
-        bucket.put("eod/trade_summary", dataFile);
+        bucket.put("eod/trade_summary/", dataFile);
     }
 }
