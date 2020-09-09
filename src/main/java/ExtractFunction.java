@@ -19,7 +19,7 @@ public class ExtractFunction implements HttpFunction {
         GoogleBucket googleBucket = GoogleBucket.builder()
                 .bucketName("cse_data")
                 .projectId("scenic-setup-274303")
-                .credentials(GoogleCredentials.fromStream(ExtractFunction.class.getClassLoader().getResourceAsStream("resources/scenic-setup-274303-f9a5dd9b19d3.json")))
+                .credentials(GoogleCredentials.fromStream(Main.class.getClassLoader().getResourceAsStream("scenic-setup-274303-f9a5dd9b19d3.json")))
                 .build();
 
         // Fetch Daily Summary and store it to the google cloud

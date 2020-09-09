@@ -7,7 +7,6 @@ import com.quant.extract.cse.reader.CSEHttpReader;
 import com.quant.extract.cse.source.TradeSummarySource;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -17,11 +16,11 @@ import java.util.concurrent.Future;
 @Log4j2
 public class Main {
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+
         GoogleBucket googleBucket = GoogleBucket.builder()
                 .bucketName("cse_data")
                 .projectId("scenic-setup-274303")
-                .credentials(GoogleCredentials.fromStream(
-                        new FileInputStream("/Users/hapu/Quant/keys/scenic-setup-274303-f9a5dd9b19d3.json")))
+                .credentials(GoogleCredentials.fromStream(Main.class.getClassLoader().getResourceAsStream("scenic-setup-274303-f9a5dd9b19d3.json")))
                 .build();
 
         // Fetch Daily Summary and store it to the google cloud
