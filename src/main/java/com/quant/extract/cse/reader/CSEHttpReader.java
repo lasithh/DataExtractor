@@ -19,20 +19,29 @@ public class CSEHttpReader {
 
     public byte[] get(@NonNull final String relativeUrl) throws SourceException {
         try {
-            String response = readFromCSE(relativeUrl);
+            String response = readFromCSE(relativeUrl, "GET");
             return response.getBytes(StandardCharsets.UTF_8);
         } catch (IOException | InterruptedException e) {
             throw new SourceException(e);
         }
     }
 
-    private String readFromCSE(final String relativeUrl) throws IOException, InterruptedException {
+    public byte[] post(@NonNull final String relativeUrl) throws SourceException {
+        try {
+            String response = readFromCSE(relativeUrl, "POST");
+            return response.getBytes(StandardCharsets.UTF_8);
+        } catch (IOException | InterruptedException e) {
+            throw new SourceException(e);
+        }
+    }
+
+    private String readFromCSE(final String relativeUrl, String method) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.cse.lk/" + relativeUrl))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .method(method, HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
         // Send request then print

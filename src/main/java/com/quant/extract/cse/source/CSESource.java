@@ -13,4 +13,8 @@ abstract class CSESource implements Source {
     protected byte[] get(final String relativeUrl) {
         return httpReader.get(relativeUrl);
     }
+
+    protected byte[] post(final String relativeUrl) {
+        return httpReader.post(relativeUrl);
+    }
 }

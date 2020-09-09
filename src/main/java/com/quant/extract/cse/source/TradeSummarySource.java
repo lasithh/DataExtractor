@@ -18,7 +18,7 @@ public final class TradeSummarySource extends CSESource {
 
     @Override
     public List<DataFile> files() {
-        byte[] tradeSummary = get("/api/tradeSummary");
+        byte[] tradeSummary = post("/api/tradeSummary");
         return List.of(new DataFile(fileNameProvider.getFileName(), DataFile.FileType.CSV, tradeSummary));
     }
 }

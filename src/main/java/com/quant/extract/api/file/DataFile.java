@@ -7,7 +7,7 @@ import lombok.NonNull;
  */
 public class DataFile {
     public enum FileType {
-        CSV, PNG, PDF
+        CSV, PNG, PDF, TEXT
     }
 
     @NonNull
