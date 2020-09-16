@@ -13,7 +13,6 @@ import com.quant.extract.destination.cloud.GoogleBucketDestination;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -29,19 +28,9 @@ public class Main {
 
     public static void extractAnnouncements() throws IOException, ExecutionException, InterruptedException {
         CSEHttpReader cseHttpReader = CSEHttpReader.getInstance();
-        // Fetch Daily Summary and store it to the google cloud
-        ListedCompanySource companySource = new ListedCompanySource(cseHttpReader);
-        OnMemoryDestination companies = new OnMemoryDestination();
-        // Setup data mover
-        DataMover mover = new DataMover(companySource, companies);
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<?> result = executor.submit(mover);
 
-        // Wait for execution to finish
-        result.get();
-
-        List<String> symbols = new SymbolsParser().parseSymbols(companies.getFile().getData());
-        List<Future> futures = new ArrayList<>();
+        List<String> symbols = getSymbols(cseHttpReader, executor);
         for (String symbol : symbols) {
             System.out.println(symbol);
             // Fetch announcements and  store it to the google cloud
@@ -53,6 +42,20 @@ public class Main {
         }
 
         executor.shutdown();
+    }
+
+    private static List<String> getSymbols(final  CSEHttpReader cseHttpReader, ExecutorService executor) throws ExecutionException, InterruptedException {
+        // Fetch Daily Summary and store it to the google cloud
+        ListedCompanySource companySource = new ListedCompanySource(cseHttpReader);
+        OnMemoryDestination companies = new OnMemoryDestination();
+        // Setup data mover
+        DataMover mover = new DataMover(companySource, companies);
+        Future<?> result = executor.submit(mover);
+
+        // Wait for execution to finish
+        result.get();
+
+        return new SymbolsParser().parseSymbols(companies.getFile().getData());
     }
 
     public static void extractTradeSummary() throws IOException, ExecutionException, InterruptedException {
