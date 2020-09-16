@@ -1,22 +1,12 @@
 steps:
-  - name: maven:3.6.0-jdk-11-slim
-    entrypoint: 'mvn'
-    args: ['clean', 'install', '-DskipTests']
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/DataExtractorImage', '.']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/DataExtractorImage']
+  # Deploy container image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - functions
-      - deploy
-      - extractDailyData
-      - --source=.
-      - --entry-point=ExtractFunction
-      - --trigger-http
-      - --runtime=java11
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - functions
-      - deploy
-      - extractAnnouncements
-      - --source=.
-      - --entry-point=ExtractAnnouncementsFunction
-      - --trigger-http
-      - --runtime=java11
+    args: ['run', 'deploy', 'DataExtractor', '--image', 'gcr.io/$PROJECT_ID/DataExtractorImage', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
+images:
+  - gcr.io/$PROJECT_ID/DataExtractorImage

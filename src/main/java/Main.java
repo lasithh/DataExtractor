@@ -1,9 +1,11 @@
 import com.quant.extract.api.DataMover;
 import com.quant.extract.api.Destination;
 import com.quant.extract.cse.CSEHttpReader;
+import com.quant.extract.cse.naming.FileNameProvider;
 import com.quant.extract.cse.parse.SymbolsParser;
 import com.quant.extract.cse.source.AnnouncementsSource;
 import com.quant.extract.cse.source.ListedCompanySource;
+import com.quant.extract.cse.source.TradeSummarySource;
 import com.quant.extract.destination.OnMemoryDestination;
 import com.quant.extract.destination.cloud.GoogleBucketDestination;
 import lombok.extern.log4j.Log4j2;
@@ -19,10 +21,11 @@ import java.util.concurrent.Future;
 @Log4j2
 public class Main {
     public static void main(String[] args) throws Exception {
-        run();
+        extractTradeSummary();
+        extractAnnouncements();
     }
 
-    public static void run() throws IOException, ExecutionException, InterruptedException {
+    public static void extractAnnouncements() throws IOException, ExecutionException, InterruptedException {
         CSEHttpReader cseHttpReader = CSEHttpReader.getInstance();
         // Fetch Daily Summary and store it to the google cloud
         ListedCompanySource companySource = new ListedCompanySource(cseHttpReader);
@@ -54,6 +57,26 @@ public class Main {
                 futures.clear();
             }
         }
+
+        executor.shutdown();
+    }
+
+    public static void extractTradeSummary() throws IOException, ExecutionException, InterruptedException {
+        CSEHttpReader cseHttpReader = CSEHttpReader.getInstance();
+        // Fetch Daily Summary and store it to the google cloud
+        TradeSummarySource tradeSummary =
+                new TradeSummarySource(cseHttpReader, new FileNameProvider(new CSEHttpReader()));
+        Destination tradeSummaryDestination = new GoogleBucketDestination("eod/trade_summary/");
+
+        // Setup data mover
+        DataMover mover = new DataMover(tradeSummary, tradeSummaryDestination);
+
+        // Execute movers
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<?> result = executor.submit(mover);
+
+        // Wait for execution to finish
+        result.get();
 
         executor.shutdown();
     }
