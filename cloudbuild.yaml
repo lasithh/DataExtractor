@@ -2,7 +2,7 @@ steps:
   - name: maven:3.6.0-jdk-11-slim
     entrypoint: 'mvn'
     args: ['clean', 'install', '-DskipTests']
-  - name: 'function1'
+  - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - functions
       - deploy
@@ -11,12 +11,12 @@ steps:
       - --entry-point=ExtractFunction
       - --trigger-http
       - --runtime=java11
-  - name: 'function2'
-      args:
-        - functions
-        - deploy
-        - extractAnnouncements
-        - --source=.
-        - --entry-point=ExtractAnnouncementsFunction
-        - --trigger-http
-        - --runtime=java11
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - functions
+      - deploy
+      - extractAnnouncements
+      - --source=.
+      - --entry-point=ExtractAnnouncementsFunction
+      - --trigger-http
+      - --runtime=java11
