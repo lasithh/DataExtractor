@@ -1,3 +1,6 @@
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
 import com.quant.extract.api.DataMover;
 import com.quant.extract.api.Destination;
 import com.quant.extract.cse.CSEHttpReader;
@@ -6,23 +9,16 @@ import com.quant.extract.cse.source.AnnouncementsSource;
 import com.quant.extract.cse.source.ListedCompanySource;
 import com.quant.extract.destination.OnMemoryDestination;
 import com.quant.extract.destination.cloud.GoogleBucketDestination;
-import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@Log4j2
-public class Main {
-    public static void main(String[] args) throws Exception {
-        run();
-    }
-
-    public static void run() throws IOException, ExecutionException, InterruptedException {
+public class ExtractAnnouncementsFunction implements HttpFunction {
+    @Override
+    public void service(HttpRequest httpRequest, HttpResponse httpResponse) throws Exception {
         CSEHttpReader cseHttpReader = CSEHttpReader.getInstance();
         // Fetch Daily Summary and store it to the google cloud
         ListedCompanySource companySource = new ListedCompanySource(cseHttpReader);

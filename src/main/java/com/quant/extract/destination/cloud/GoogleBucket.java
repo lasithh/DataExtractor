@@ -1,4 +1,4 @@
-package com.quant.extract.cloud;
+package com.quant.extract.destination.cloud;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.BlobId;
@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @ToString
 @Builder
-public class GoogleBucket {
+class GoogleBucket {
     @NonNull
     private final String bucketName;
 

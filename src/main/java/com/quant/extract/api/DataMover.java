@@ -1,21 +1,23 @@
 package com.quant.extract.api;
 
-/**
- * Moves data from {@link DataMover#source} to the {@link DataMover#destination}.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class DataMover implements Runnable {
 
-    private final Source source;
+    private final Map<Source, Destination> mapping;
 
-    private final Destination destination;
+    public DataMover(final Source source, final Destination destination) {
+        this.mapping = new HashMap<>();
+        this.mapping.put(source, destination);
+    }
 
-    public DataMover(final Source source, Destination destination) {
-        this.source = source;
-        this.destination = destination;
+    public void add(final Source source, final Destination destination) {
+        mapping.put(source, destination);
     }
 
     @Override
     public void run() {
-        source.files().forEach(e -> destination.put(e));
+        mapping.forEach((s, d) -> s.get().forEach(file -> d.put(file)));
     }
 }

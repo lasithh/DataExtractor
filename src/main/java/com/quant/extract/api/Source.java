@@ -6,5 +6,5 @@ import com.quant.extract.api.file.DataFile;
 import java.util.List;
 
 public interface Source {
-    List<DataFile> files() throws SourceException;
+    List<DataFile> get() throws SourceException;
 }
