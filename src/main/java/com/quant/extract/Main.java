@@ -22,7 +22,9 @@ import java.util.concurrent.Future;
 @Log4j2
 public class Main {
     public static void main(String[] args) throws Exception {
+        System.out.println("Downloading  trade summary");
         extractTradeSummary();
+        System.out.println("Downloading announcements");
         extractAnnouncements();
     }
 
