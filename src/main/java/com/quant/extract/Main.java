@@ -34,7 +34,7 @@ public class Main {
         OnMemoryDestination companies = new OnMemoryDestination();
         // Setup data mover
         DataMover mover = new DataMover(companySource, companies);
-        ExecutorService executor = Executors.newFixedThreadPool(3);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<?> result = executor.submit(mover);
 
         // Wait for execution to finish
@@ -49,15 +49,7 @@ public class Main {
             Destination announcementsDestination = new GoogleBucketDestination("company_data/" + symbol + "/announcements");
 
             DataMover announcementsMover = new DataMover(announcementsSource, announcementsDestination);
-            futures.add(executor.submit(announcementsMover));
-
-            // Process in batches of 10
-            if (futures.size() > 3) {
-                for(Future future: futures) {
-                    future.get();
-                }
-                futures.clear();
-            }
+            executor.submit(announcementsMover).get();
         }
 
         executor.shutdown();
