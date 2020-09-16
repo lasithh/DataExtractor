@@ -33,8 +33,6 @@ public class AnnouncementsSource extends CSESource {
             // Get announcement
             String announcementId = jsonElement.getAsJsonObject().get("announcementId").getAsString();
             String str = getAnnouncement(announcementId);
-
-            System.out.println(symbol + ":" + announcementId);
             // Save Announcement
             JsonObject json = JsonParser.parseString(str).getAsJsonObject();
             if (json.has("reqBaseAnnouncement")) {
